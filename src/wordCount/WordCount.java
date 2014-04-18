@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.StringTokenizer;
+
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -47,15 +47,21 @@ public class WordCount extends Configured implements Tool {
 
 		public void map(LongWritable key, Text value, OutputCollector<Text, IntWritable> output, Reporter reporter) throws IOException {
 			String line = value.toString();
-			String[] crumbs = line.split("[\\W]");//("[\\W\\t-_,]");
-			/*StringTokenizer itr = new StringTokenizer(line);
-			while (itr.hasMoreTokens()) {
-				word.set(itr.nextToken());
-				output.collect(word, one);
-			}*/
+
+			String[] crumbs = line.split("[\\W]");//("[\\W\\t-_,]"); //split by any non-word characters
+
 			for( String w : crumbs){
-				word.set(w);
-				output.collect(word,one);
+				boolean noDigits = true;
+				for(int i=0;i<10;i++){
+					String[] digits = {"0","1","2","3","4","5","6","7","8","9"};
+					if(w.contains(digits[i])){
+						noDigits = false; // I'm skipping numbers and words like "2nd"
+					}
+				}
+				if(noDigits){
+					word.set(w);
+					output.collect(word,one);
+				}
 			}
 		}
 	}
