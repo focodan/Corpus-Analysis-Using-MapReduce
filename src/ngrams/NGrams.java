@@ -1,4 +1,4 @@
-package readingScores;
+package ngrams;
 
 import java.io.IOException;
 
@@ -9,18 +9,29 @@ import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.mapreduce.lib.input.*;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-public class ReadingScores {
+// have this class accept commandline arg for n-value, learn how context variables work
+
+public class NGrams {
 	public static void main( String [] args ) throws IOException, ClassNotFoundException, InterruptedException {
-		Job job = Job.getInstance (new Configuration ());
-		job.setJarByClass(ReadingScores.class); //this class’s name
-		job.setJobName("Flesch Scores"); //name of this job.
+		
+		Configuration conf = new Configuration();
+		if(args.length >= 3){ // if user passed us a parameter explicitly
+			conf.set("Ngram", args[2]); // dpe do something similar to set N value for N-gram
+		}
+		else{ // We default to 1-grams, or more simply, word count
+			conf.set("Ngram", "1");
+		}
+		
+		Job job = Job.getInstance (conf/*new Configuration ()*/);
+		job.setJarByClass(NGrams.class); //this class’s name
+		job.setJobName("N-Grams"); //name of this job.
 		
 		FileInputFormat.addInputPath( job ,new Path( args [0])); //input path
 		FileOutputFormat.setOutputPath( job ,new Path( args [1])); //output path
 		
-		job.setMapperClass(ScoreMapper.class ); //mapper class
+		job.setMapperClass(NGramsMapper.class ); //mapper class
 		//job.setCombinerClass( ScoreReducer.class ); //optional dpe perhaps remove
-		job.setReducerClass( ScoreReducer.class ); //reducer class
+		job.setReducerClass( NGramsReducer.class ); //reducer class
 		
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(ArrayPrimitiveWritable.class);
