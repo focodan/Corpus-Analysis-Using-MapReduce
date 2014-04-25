@@ -14,7 +14,7 @@ import org.apache.hadoop.mapred.FileOutputFormat;
 import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.MapReduceBase;
-import org.apache.hadoop.mapred.Mapper;
+import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.Reducer;
 import org.apache.hadoop.mapred.Reporter;
@@ -32,16 +32,9 @@ import org.apache.hadoop.mapred.FileSplit;
  *            [-m <i>maps</i>] [-r <i>reduces</i>] <i>in-dir</i> <i>out-dir</i> 
  */
 public class ReadingScores extends Configured implements Tool {
-	/**
-	 * Counts the words in each line.
-	 * For each line of input, break the line into words and emit them as
-	 * (<b>word</b>, <b>1</b>).
-	 */
-	public static class MapClass extends MapReduceBase implements Mapper<LongWritable, Text, Text, ArrayPrimitiveWritable> {
 
-		//private final static IntWritable one = new IntWritable(1);
-		private Text word = new Text();
-		
+	
+	public static class MapClass extends MapReduceBase implements Mapper<LongWritable, Text, Text, ArrayPrimitiveWritable> {		
 		private int countSyllables(String word)
 	    {
 	        char[] vowels = { 'a', 'e', 'i', 'o', 'u', 'y' };
@@ -87,7 +80,7 @@ public class ReadingScores extends Configured implements Tool {
 	        return numVowels;
 	    }
 
-		public void map(LongWritable key, Text value, OutputCollector<Text, ArrayPrimitiveWritable> output, Reporter reporter) throws IOException {
+		public void map(LongWritable key, Text value, org.apache.hadoop.mapreduce.Mapper.Context context) throws IOException, InterruptedException {
 			String fileName = ((FileSplit) context.getInputSplit()).getPath().getName();
 			
 			long sentenceCount = 0;
@@ -130,7 +123,7 @@ public class ReadingScores extends Configured implements Tool {
 				}
 			}
 			// emit total to output collector
-			output.collect(new Text(fileName)/*key*/, new ArrayPrimitiveWritable(new long[] {sentenceCount,wordCount,syllableCount}));
+			context.write(new Text(fileName)/*key*/, new ArrayPrimitiveWritable(new long[] {sentenceCount,wordCount,syllableCount}));
 		}
 	}
 
