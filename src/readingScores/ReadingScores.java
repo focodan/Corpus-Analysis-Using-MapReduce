@@ -14,13 +14,20 @@ public class ReadingScores {
 		Job job = Job.getInstance (new Configuration ());
 		job.setJarByClass(ReadingScores.class); //this class’s name
 		job.setJobName("Word Count"); //name of this job.
+		
 		FileInputFormat.addInputPath( job ,new Path( args [0])); //input path
 		FileOutputFormat.setOutputPath( job ,new Path( args [1])); //output path
+		
 		job.setMapperClass(ScoreMapper.class ); //mapper class
-		job.setCombinerClass( ScoreReducer.class ); //optional dpe perhaps remove
+		//job.setCombinerClass( ScoreReducer.class ); //optional dpe perhaps remove
 		job.setReducerClass( ScoreReducer.class ); //reducer class
+		
+		job.setMapOutputKeyClass(Text.class);
+		job.setMapOutputValueClass(ArrayPrimitiveWritable.class);
+		
 		job.setOutputKeyClass( Text.class ); // the key your reducer outputs
-		job.setOutputValueClass( IntWritable.class ); // the value
+		job.setOutputValueClass(Text.class ); // the value
+		
 		System.exit( job.waitForCompletion( true ) ? 0 : 1);
 	}
 }
