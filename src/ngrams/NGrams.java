@@ -34,7 +34,7 @@ public class NGrams {
 		job.setReducerClass( NGramsReducer.class ); //reducer class
 		
 		job.setMapOutputKeyClass(Text.class);
-		job.setMapOutputValueClass(ArrayPrimitiveWritable.class);
+		job.setMapOutputValueClass(Text.class);
 		
 		job.setOutputKeyClass( Text.class ); // the key your reducer outputs
 		job.setOutputValueClass(Text.class ); // the value
