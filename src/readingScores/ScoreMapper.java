@@ -1,6 +1,7 @@
 package readingScores;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.apache.hadoop.io.ArrayPrimitiveWritable;
 import org.apache.hadoop.io.LongWritable;
@@ -8,6 +9,8 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 //import org.apache.hadoop.mapreduce.Mapper.Context;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+
+import parseUtil.Parser;
 
 public class ScoreMapper extends Mapper <LongWritable ,Text , Text , ArrayPrimitiveWritable> {
 	public void map(LongWritable key , Text value , Context context) throws IOException , InterruptedException {
@@ -17,43 +20,21 @@ public class ScoreMapper extends Mapper <LongWritable ,Text , Text , ArrayPrimit
 		long wordCount = 0;
 		long syllableCount = 0;
 
-		//split text section into sentences
-		// size is sentence count
-
-		//split text section into words
-		// add to wordCount
-
-		//for each word, calculate syllable count, increment counter by that amount
-
-		// emit key, array to output collector
-
 		String section = value.toString();
 
-		String[] sentences = section.split(".?!");
+		String[] sentences = Parser.splitToSentences(section);
 		sentenceCount = sentences.length;
 
 		for(String sentence: sentences){
-			String[] words = sentence.split("[\\W]");
+			ArrayList<String> words = Parser.sentenceToWords(sentence);
 			for(String w: words){
-				boolean noDigits = true;
-				for(int i=0;i<10;i++){
-					String[] digits = {"0","1","2","3","4","5","6","7","8","9"};
-					if(w.contains(digits[i])){
-						noDigits = false; // I'm skipping numbers and words like "2nd"
-					}
-				}
-				if(noDigits){ // a word I consider to be valid
-
-					++wordCount;
-					syllableCount += countSyllables(w);
-
-					//word.set(w);
-					//output.collect(word,one);
-				}
+				++wordCount;
+				syllableCount += countSyllables(w);
 			}
+			
 		}
 		// emit total to output collector
-		context.write(new Text(fileName)/*key*/, new ArrayPrimitiveWritable(new long[] {sentenceCount,wordCount,syllableCount}));
+		context.write(new Text(fileName), new ArrayPrimitiveWritable(new long[] {sentenceCount,wordCount,syllableCount}));
 	}
 	//end map
 

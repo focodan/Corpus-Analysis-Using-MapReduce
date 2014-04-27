@@ -1,10 +1,8 @@
 package parseUtil;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import org.apache.hadoop.io.Text;
 
 public class Parser {
 
@@ -17,19 +15,22 @@ public class Parser {
 	// Given a sentence, split into a list of 'valid' words
 	public static ArrayList<String> sentenceToWords(String sentence){
 		//ArrayList<String> rawWords = new ArrayList<String>();
-		String[] rawWords = sentence.split(" +|,|\"");
+		String[] rawWords = sentence.split(" +|,|;|\\(|\\)|:|\"");
 		ArrayList<String> validWords = new ArrayList<String>();
 		
 		for(int i=0;i<rawWords.length;i++){
 			//some test here
-			if(rawWords[i].equals("")||rawWords[i].equals(" ")||rawWords[i].equals(",")){}
-			else validWords.add(rawWords[i]);
+			if(rawWords[i].equals("")||rawWords[i].equals(" ")||rawWords[i].equals(",")
+					||rawWords[i].equals(";")||rawWords[i].equals(":")||rawWords[i].equals("\"")
+					||rawWords[i].equals(")")||rawWords[i].equals("(")){}
+			else validWords.add(rawWords[i].toLowerCase());
 		}
 		
 		return validWords;
 	}
 	
-	// N-Gram building, here just as a quick testing place
+	// N-Gram building, here just as a quick testing place. This is now merged into NGramsMapper.java,
+	// this can be removed at any time.
 	public static ArrayList<String> nGramListT(ArrayList<String> words, int N){
 		ArrayList<String> grams = new ArrayList<String>();
 		for(int i=0; i+N <= words.size();i++){
@@ -52,7 +53,7 @@ public class Parser {
 		
 		System.out.println("------------------------------------------------------------");
 		
-		String testSentence = "if one were to split   two-by-two, then I'd say \"hello\" 2nd to you too";
+		String testSentence = "if one were to split (and))  two-by-two, then I'd say \"hello\" 2nd to you too";
 		
 		ArrayList<String> words = sentenceToWords(testSentence);
 		for( String w: words) System.out.println(":"+w+":");
