@@ -1,4 +1,4 @@
-package parseUtil;
+package util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class Parser {
 	
 	// N-Gram building, here just as a quick testing place. This is now merged into NGramsMapper.java,
 	// this can be removed at any time.
-	public static ArrayList<String> nGramListT(ArrayList<String> words, int N){
+	/*public static ArrayList<String> nGramListT(ArrayList<String> words, int N){
 		ArrayList<String> grams = new ArrayList<String>();
 		for(int i=0; i+N <= words.size();i++){
 			List<String> nGramList = words.subList(i,i+N);
@@ -43,7 +43,7 @@ public class Parser {
 			grams.add(nGram);
 		}
 		return grams;
-	}
+	}*/
 	
 	// Test area
 	public static void main(String[] args){
@@ -60,8 +60,8 @@ public class Parser {
 		
 		System.out.println("------------------------------------------------------------");
 	
-		ArrayList<String> grams = nGramListT(words,4);
-		for (String g : grams) System.out.println(":"+g+":");
+		/*ArrayList<String> grams = nGramListT(words,4);
+		for (String g : grams) System.out.println(":"+g+":");*/
 	}
 	
 }

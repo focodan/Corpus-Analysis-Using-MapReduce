@@ -1,4 +1,4 @@
-package readingScores;
+package wordCount;
 
 import java.io.IOException;
 import java.util.StringTokenizer;

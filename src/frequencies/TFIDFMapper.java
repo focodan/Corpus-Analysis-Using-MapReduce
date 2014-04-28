@@ -1,5 +1,4 @@
-package ngrams;
-
+package frequencies;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +13,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import util.Parser;
 
 
-public class NGramsMapper extends Mapper <LongWritable ,Text , Text , Text> {
+public class TFIDFMapper extends Mapper <LongWritable ,Text , Text , TextPair> {
 	public void map(LongWritable key , Text value , Context context) throws IOException , InterruptedException {
 		String fileName = ((FileSplit) context.getInputSplit()).getPath().getName();
 
@@ -32,7 +31,7 @@ public class NGramsMapper extends Mapper <LongWritable ,Text , Text , Text> {
 			validWords = Parser.sentenceToWords(sentence);
 			ArrayList<String> grams = nGramList(validWords,N);
 			for(String g : grams){
-				context.write(new Text(fileName), new Text(g));
+				context.write(new Text(fileName), new TextPair(g,g));
 			}
 		}
 	}

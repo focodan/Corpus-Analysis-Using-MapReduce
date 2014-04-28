@@ -30,7 +30,7 @@ public class ScoreReducer extends Reducer< Text , ArrayPrimitiveWritable , Text 
 		double fleschKinCaidGrade = 0.39*(((double)totalWords)/totalSentences) 
 									+ 11.8*(((double)totalSyllables)/totalWords) -15.59;
 		
-		String formattedResult = new String(key.toString()+" "+fleschReadingEase+", "+fleschKinCaidGrade);
+		String formattedResult = new String(/*key.toString()+" "+*/fleschReadingEase+", "+fleschKinCaidGrade);
 		
 		context.write(key,new Text(formattedResult));
 	}
