@@ -1,6 +1,7 @@
 package frequencies;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
@@ -15,11 +16,7 @@ import util.Parser;
 
 public class TFIDFMapper extends Mapper <LongWritable ,Text , Text , TextPair> {
 	public void map(LongWritable key , Text value , Context context) throws IOException , InterruptedException {
-		String fileName = ((FileSplit) context.getInputSplit()).getPath().getName();
-
-		// this is used to extract our configuration value for N
-		Configuration conf = context.getConfiguration();
-		final int N = new Integer(conf.get("Ngram")); 
+		/*String fileName = ((FileSplit) context.getInputSplit()).getPath().getName();
 
 		String section = value.toString();
 
@@ -33,23 +30,23 @@ public class TFIDFMapper extends Mapper <LongWritable ,Text , Text , TextPair> {
 			for(String g : grams){
 				context.write(new Text(fileName), new TextPair(g,g));
 			}
+		}*/
+		//HashMap<String,ArrayList<TextPair>> ngramVectors;
+		
+		String[] sections = (value.toString()).split("\n\r");
+		//try{
+		for(String line : sections){
+			String[] fields = line.split(",");
+			//docname,"+ngram+","+count+","+tf(count,maxFrequency)))
+			Text nGram = new Text(fields[1]);
+			TextPair docTf = new TextPair(fields[0],fields[3]);
+			context.write(nGram,docTf);
+			
 		}
+		
+
+
 	}
 	//end map
-
-	// nGram generator
-	private ArrayList<String> nGramList(ArrayList<String> words, int N){
-		ArrayList<String> grams = new ArrayList<String>();
-		for(int i=0; i+N <= words.size();i++){
-			List<String> nGramList = words.subList(i,i+N);
-			String nGram = "";
-			for(int j=0;j<nGramList.size();j++){
-				nGram += nGramList.get(j);
-				if(j!=nGramList.size()-1){ nGram+=" "; } // join all the middle words with a space
-			}
-			grams.add(nGram);
-		}
-		return grams;
-	}
 
 } //end mapper class

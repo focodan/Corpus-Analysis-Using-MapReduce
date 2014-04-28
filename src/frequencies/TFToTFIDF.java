@@ -15,11 +15,12 @@ public class TFToTFIDF {
 	public static void main( String [] args ) throws IOException, ClassNotFoundException, InterruptedException {
 		
 		Configuration conf = new Configuration();
+		// set configuration variable for the number of documents in the corpus
 		if(args.length >= 3){ // if user passed us a parameter explicitly
-			conf.set("Ngram", args[2]); // dpe do something similar to set N value for N-gram
+			conf.set("NumDocs", args[2]);
 		}
-		else{ // We default to 1-grams, or more simply, word count
-			conf.set("Ngram", "1");
+		else{ // We default to 1 if left unspecified
+			conf.set("NumDocs", "1");
 		}
 		
 		Job job = Job.getInstance (conf/*new Configuration ()*/);
@@ -37,7 +38,7 @@ public class TFToTFIDF {
 		job.setMapOutputValueClass(TextPair.class);
 		
 		job.setOutputKeyClass( Text.class ); // the key your reducer outputs
-		job.setOutputValueClass(ArrayWritable.class ); // the value
+		job.setOutputValueClass(Text.class ); // the value // change to arraywritable if i have enough time to re-style my code
 		
 		System.exit( job.waitForCompletion( true ) ? 0 : 1);
 	}

@@ -28,22 +28,7 @@ public class Parser {
 		
 		return validWords;
 	}
-	
-	// N-Gram building, here just as a quick testing place. This is now merged into NGramsMapper.java,
-	// this can be removed at any time.
-	/*public static ArrayList<String> nGramListT(ArrayList<String> words, int N){
-		ArrayList<String> grams = new ArrayList<String>();
-		for(int i=0; i+N <= words.size();i++){
-			List<String> nGramList = words.subList(i,i+N);
-			String nGram = "";
-			for(int j=0;j<nGramList.size();j++){// String s : nGramList){
-				nGram += nGramList.get(j);
-				if(j!=nGramList.size()-1){ nGram+=" "; } // join all the middle words with a space
-			}// nGram = nGram.substring(0, nGram.length()); // remove trailing " "
-			grams.add(nGram);
-		}
-		return grams;
-	}*/
+
 	
 	// Test area
 	public static void main(String[] args){
@@ -59,9 +44,7 @@ public class Parser {
 		for( String w: words) System.out.println(":"+w+":");
 		
 		System.out.println("------------------------------------------------------------");
-	
-		/*ArrayList<String> grams = nGramListT(words,4);
-		for (String g : grams) System.out.println(":"+g+":");*/
+
 	}
 	
 }
