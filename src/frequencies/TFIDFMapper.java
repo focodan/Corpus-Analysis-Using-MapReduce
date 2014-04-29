@@ -1,17 +1,12 @@
 package frequencies;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
-import org.apache.hadoop.conf.Configuration;
+
+
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
-//import org.apache.hadoop.mapreduce.Mapper.Context;
-import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 
-import util.Parser;
 
 
 public class TFIDFMapper extends Mapper <LongWritable ,Text , Text , TextPair> {
@@ -33,19 +28,17 @@ public class TFIDFMapper extends Mapper <LongWritable ,Text , Text , TextPair> {
 		}*/
 		//HashMap<String,ArrayList<TextPair>> ngramVectors;
 		
-		String[] sections = (value.toString()).split("\n\r");
-		//try{
-		for(String line : sections){
+		String[] sections = (value.toString()).split("\n");
+		//
+		//for(String line : sections){
+		for(int i=0;i<sections.length;i++){
+			String line = sections[i];
 			String[] fields = line.split(",");
 			//docname,"+ngram+","+count+","+tf(count,maxFrequency)))
-			Text nGram = new Text(fields[1]);
-			TextPair docTf = new TextPair(fields[0],fields[3]);
+			Text nGram = new Text(fields[1].trim());
+			TextPair docTf = new TextPair(fields[0].trim(),fields[3].trim());
 			context.write(nGram,docTf);
-			
 		}
-		
-
-
 	}
 	//end map
 

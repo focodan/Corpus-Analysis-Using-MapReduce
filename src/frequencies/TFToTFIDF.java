@@ -30,9 +30,9 @@ public class TFToTFIDF {
 		FileInputFormat.addInputPath( job ,new Path( args [0])); //input path
 		FileOutputFormat.setOutputPath( job ,new Path( args [1])); //output path
 		
-		job.setMapperClass(TFIDFMapper.class ); //mapper class
+		job.setMapperClass(TFIDFMapper.class); //mapper class
 		//job.setCombinerClass( ScoreReducer.class ); //optional dpe perhaps remove
-		job.setReducerClass(TFIDFReducer.class ); //reducer class
+		job.setReducerClass(TFIDFReducer.class); //reducer class
 		
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(TextPair.class);
