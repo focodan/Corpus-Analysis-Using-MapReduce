@@ -15,17 +15,18 @@ public class Parser {
 	// Given a sentence, split into a list of 'valid' words
 	public static ArrayList<String> sentenceToWords(String sentence){
 		//ArrayList<String> rawWords = new ArrayList<String>();
-		String[] rawWords = sentence.split(" +|,|;|\\(|\\)|:|\"");
+		String[] rawWords = sentence.split(" +|,|\\$|_|;|\\(|\\)|:|\"");
 		ArrayList<String> validWords = new ArrayList<String>();
-		
+
 		for(int i=0;i<rawWords.length;i++){
 			//some test here
 			if(rawWords[i].equals("")||rawWords[i].equals(" ")||rawWords[i].equals(",")
 					||rawWords[i].equals(";")||rawWords[i].equals(":")||rawWords[i].equals("\"")
-					||rawWords[i].equals(")")||rawWords[i].equals("(")){}
+					||rawWords[i].equals(")")||rawWords[i].equals("$")||rawWords[i].equals("_")
+					||rawWords[i].equals("(")){}
 			else validWords.add(rawWords[i].toLowerCase());
 		}
-		
+
 		return validWords;
 	}
 
