@@ -11,7 +11,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
-public class TFIDFReducer extends Reducer< Text , TextPair , Text , Text > {
+public class IDFReducer extends Reducer< Text , TextPair , Text , Text > {
 
 	///////changed to reduce1, so that the job will use the identity reducer.
 	public void reduce(Text key, Iterable <TextPair> values, Context context) throws IOException , InterruptedException {
@@ -36,6 +36,8 @@ public class TFIDFReducer extends Reducer< Text , TextPair , Text , Text > {
 		
 		double idf = Math.log10(((double)N)/docTf.size());
 		
+		
+		/*
 		for(int i=0;i<docTf.size();i++){
 			TextPair pair = docTf.get(i);
 			String docID = docIDs.get(i);//pair.getFirst().toString();
@@ -46,9 +48,10 @@ public class TFIDFReducer extends Reducer< Text , TextPair , Text , Text > {
 			if(i!=docTf.size()-1) { // separate intermediate pairs w/ comma
 				docScoreList += ",";
 			}
+		}*/
+		if(idf > 2.0 && idf <2.99){
+			context.write(key, new Text(","+new Double(idf)));
 		}
-		
-		context.write(key, new Text(docScoreList));
 	}
 	private Double TFIDF(double idf, double tf){
 		return idf*tf;

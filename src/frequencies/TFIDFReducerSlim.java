@@ -1,5 +1,6 @@
 package frequencies;
 
+import util.Parser;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -11,11 +12,20 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
-public class TFIDFReducer extends Reducer< Text , TextPair , Text , Text > {
+public class TFIDFReducerSlim extends Reducer< Text , TextPair , Text , Text > {
 
 	///////changed to reduce1, so that the job will use the identity reducer.
 	public void reduce(Text key, Iterable <TextPair> values, Context context) throws IOException , InterruptedException {
 
+		//get rid of non-alphabet characters 
+		String k = key.toString();
+		k = Parser.removeNonPrintableChars(k);
+		if(Parser.containsDigit(k)){
+			return; // We won't write out numeric-words
+		}
+		//http://stackoverflow.com/questions/7161534/fastest-way-to-strip-all-non-printable-characters-from-a-java-string
+		
+		
 		// this is used to extract our configuration value for N
 		Configuration conf = context.getConfiguration();
 		final int N = new Integer(conf.get("NumDocs")); 
@@ -37,18 +47,26 @@ public class TFIDFReducer extends Reducer< Text , TextPair , Text , Text > {
 		double idf = Math.log10(((double)N)/docTf.size());
 		
 		for(int i=0;i<docTf.size();i++){
-			TextPair pair = docTf.get(i);
+			//TextPair pair = docTf.get(i);
 			String docID = docIDs.get(i);//pair.getFirst().toString();
 			String tfScore = TFs.get(i);//pair.getSecond().toString();
-			
-			docScoreList += docID+","+TFIDF(idf,new Double(tfScore));
-			
-			if(i!=docTf.size()-1) { // separate intermediate pairs w/ comma
-				docScoreList += ",";
+			Double tfidf = TFIDF(idf,new Double(tfScore));
+			if(idf>2.0 && idf<2.9){ // only important scoring words
+				context.write(new Text(k),new Text(","+new Double(idf).toString()+","+docID));
+				docScoreList += docID+","+TFIDF(idf,new Double(tfScore));
+
+				if(i!=docTf.size()-1) { // separate intermediate pairs w/ comma
+					docScoreList += ",";
+				}
+			}
+			else{
+				return;
 			}
 		}
-		
-		context.write(key, new Text(docScoreList));
+
+		/*if(!docScoreList.equals(",")){
+			context.write(key, new Text(docScoreList));
+		}*/
 	}
 	private Double TFIDF(double idf, double tf){
 		return idf*tf;

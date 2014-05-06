@@ -29,17 +29,21 @@ public class TFToTFIDF {
 		
 		FileInputFormat.addInputPath( job ,new Path( args [0])); //input path
 		FileOutputFormat.setOutputPath( job ,new Path( args [1])); //output path
-		
+
 		job.setMapperClass(TFIDFMapper.class); //mapper class
 		//job.setCombinerClass( ScoreReducer.class ); //optional dpe perhaps remove
-		job.setReducerClass(TFIDFReducer.class); //reducer class
-		
+		job.setReducerClass(TFIDFReducerSlim.class); //reducer class
+
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(TextPair.class);
-		
+
 		job.setOutputKeyClass( Text.class ); // the key your reducer outputs
 		job.setOutputValueClass(Text.class ); // the value // change to arraywritable if i have enough time to re-style my code
-		
+
+		//Test for compressed output
+		//FileOutputFormat.setCompressOutput(job, true);
+		//FileOutputFormat.setOutputCompressorClass(job, org.apache.hadoop.io.compress.GzipCodec.class);
+
 		System.exit( job.waitForCompletion( true ) ? 0 : 1);
 	}
 }

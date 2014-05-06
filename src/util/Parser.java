@@ -1,3 +1,8 @@
+/**
+ * Parsing utility class
+ * Dan Elliott, 2014
+ */
+
 package util;
 
 import java.util.ArrayList;
@@ -20,6 +25,7 @@ public class Parser {
 
 		for(int i=0;i<rawWords.length;i++){
 			//some test here
+			//rawWords[i] = rawWords[i].replaceAll("","");
 			if(rawWords[i].equals("")||rawWords[i].equals(" ")||rawWords[i].equals(",")
 					||rawWords[i].equals(";")||rawWords[i].equals(":")||rawWords[i].equals("\"")
 					||rawWords[i].equals(")")||rawWords[i].equals("$")||rawWords[i].equals("_")
@@ -29,22 +35,33 @@ public class Parser {
 
 		return validWords;
 	}
+	
+	public static String removeNonPrintableChars(String s){
+		int length = s.length();
+		char[] oldChars = new char[length];
+		s.getChars(0, length, oldChars, 0);
+		int newLen = 0;
+		for (int j = 0; j < length; j++) {
+		    char ch = oldChars[j];
+		    if (ch >= ' ' && ch <= '~') {
+		        oldChars[newLen] = ch;
+		        newLen++;
+		    }
+		}
+		s = new String(oldChars, 0, newLen);
+		return s;
+	}
 
+	public static boolean containsDigit(String s){
+		String[] digits = {"0","1","2","3","4","5","6","7","8","9"};
+		for( String d : digits){
+			if(s.contains(d)) return true;
+		}
+		return false;
+	}
 	
 	// Test area
 	public static void main(String[] args){
-		String testSplit = "I have been asked to write a few words of preface to this work. If the life-long friendship of my mother with her Majesty, which gained for me the honour of often seeing the Queen, or a deep feeling of loyalty and affection for our sovereign, which is shared by all her subjects, be accepted as a qualification, I gratefully respond to the call, but I feel that no written words of mine can add value to the following pages. This should be a sentence? Well yes! It should indeed.!?.";
-		String[] testSplitAr = splitToSentences(testSplit);
-		for(int i=0;i<testSplitAr.length;i++) System.out.println(testSplitAr[i]);
-		
-		System.out.println("------------------------------------------------------------");
-		
-		String testSentence = "if one were to split (and))  two-by-two, then I'd say \"hello\" 2nd to you too";
-		
-		ArrayList<String> words = sentenceToWords(testSentence);
-		for( String w: words) System.out.println(":"+w+":");
-		
-		System.out.println("------------------------------------------------------------");
 
 	}
 	

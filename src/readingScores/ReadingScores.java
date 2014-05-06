@@ -11,7 +11,10 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class ReadingScores {
 	public static void main( String [] args ) throws IOException, ClassNotFoundException, InterruptedException {
-		Job job = Job.getInstance (new Configuration ());
+		
+		Configuration conf = new Configuration();
+		
+		Job job = Job.getInstance (conf);
 		job.setJarByClass(ReadingScores.class); //this class’s name
 		job.setJobName("Flesch Scores"); //name of this job.
 		
@@ -27,6 +30,11 @@ public class ReadingScores {
 		
 		job.setOutputKeyClass( Text.class ); // the key your reducer outputs
 		job.setOutputValueClass(Text.class ); // the value
+		
+		//Test for compressed output
+		FileOutputFormat.setCompressOutput(job, true);
+	    FileOutputFormat.setOutputCompressorClass(job, org.apache.hadoop.io.compress.GzipCodec.class);
+	    
 		
 		System.exit( job.waitForCompletion( true ) ? 0 : 1);
 	}
